@@ -108,7 +108,7 @@ npm run seed
 ```bash
 npm run dev
 ```
-- **Web App**: [http://localhost:5173](http://localhost:5173)
+- **Web App**: [http://localhost:5174](http://localhost:5174)
 - **API Health Check**: [http://localhost:5001/api/health](http://localhost:5001/api/health)
 
 ---

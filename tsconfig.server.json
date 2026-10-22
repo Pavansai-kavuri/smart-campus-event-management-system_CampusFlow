@@ -11,5 +11,11 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["server/src/**/*"]
+  "include": ["server/src/**/*"],
+  "exclude": [
+    "server/src/__tests__",
+    "server/src/__tests__/**/*",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
 }

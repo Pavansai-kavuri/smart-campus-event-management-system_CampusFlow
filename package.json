@@ -24,6 +24,7 @@
     "@types/qrcode": "^1.5.5",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "@types/supertest": "^6.0.2",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "bcryptjs": "^2.4.3",
@@ -46,17 +47,16 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
     "recharts": "^2.15.1",
+    "supertest": "^7.0.0",
     "tailwind-merge": "^3.0.1",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vite": "^6.1.0",
+    "vitest": "^3.0.5",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/supertest": "^6.0.2",
-    "concurrently": "^9.1.2",
-    "supertest": "^7.0.0",
-    "vitest": "^3.0.5"
+    "concurrently": "^9.1.2"
   }
 }

@@ -1,0 +1,232 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MANDATORY: Apply color-scheme to :root or html for viewport-wide theming */
+:root {
+  color-scheme: light dark;
+
+  /* Raw Palette Tokens — Light Mode (Primary: Emerald & Champagne + Dusty Rose & Antique Gold) */
+  --cf-emerald-raw-light: #178855;
+  --cf-emerald-raw-dark: #78BFA4;
+  --cf-emerald-light-raw-light: #4DAE8B;
+  --cf-emerald-light-raw-dark: #4DAE8B;
+
+  --cf-champagne-raw-light: #C5A168;
+  --cf-champagne-raw-dark: #D8B739;
+  --cf-champagne-light-raw-light: #EBD6AB;
+  --cf-champagne-light-raw-dark: #493A31;
+
+  --cf-dusty-rose-raw-light: #D49E9E;
+  --cf-dusty-rose-raw-dark: #E4A6A6;
+  --cf-mauve-raw-light: #9E5E78;
+  --cf-mauve-raw-dark: #C78BA5;
+
+  --cf-bg-raw-light: #F7F6F3;
+  --cf-bg-raw-dark: #1E1714;
+
+  --cf-surface-raw-light: #FFFFFF;
+  --cf-surface-raw-dark: #2B2118;
+
+  --cf-elevated-raw-light: #FDFBF7;
+  --cf-elevated-raw-dark: #332924;
+
+  --cf-border-raw-light: #E7E8E2;
+  --cf-border-raw-dark: #493A31;
+
+  --cf-text-primary-raw-light: #202522;
+  --cf-text-primary-raw-dark: #F8F1E7;
+
+  --cf-text-secondary-raw-light: #5C645E;
+  --cf-text-secondary-raw-dark: #C5B8A8;
+
+  /* Default Light Fallbacks */
+  --cf-emerald: var(--cf-emerald-raw-light);
+  --cf-emerald-light: var(--cf-emerald-light-raw-light);
+  --cf-champagne: var(--cf-champagne-raw-light);
+  --cf-champagne-light: var(--cf-champagne-light-raw-light);
+  --cf-dusty-rose: var(--cf-dusty-rose-raw-light);
+  --cf-mauve: var(--cf-mauve-raw-light);
+  --cf-bg: var(--cf-bg-raw-light);
+  --cf-surface: var(--cf-surface-raw-light);
+  --cf-elevated: var(--cf-elevated-raw-light);
+  --cf-border: var(--cf-border-raw-light);
+  --cf-text-primary: var(--cf-text-primary-raw-light);
+  --cf-text-secondary: var(--cf-text-secondary-raw-light);
+
+  --color-scrollbar-track: #F0EFEA;
+  --color-scrollbar-thumb: #C5A168;
+
+  /* Fallback for browsers without light-dark support */
+  @media (prefers-color-scheme: dark) {
+    --cf-emerald: var(--cf-emerald-raw-dark);
+    --cf-champagne: var(--cf-champagne-raw-dark);
+    --cf-champagne-light: var(--cf-champagne-light-raw-dark);
+    --cf-dusty-rose: var(--cf-dusty-rose-raw-dark);
+    --cf-mauve: var(--cf-mauve-raw-dark);
+    --cf-bg: var(--cf-bg-raw-dark);
+    --cf-surface: var(--cf-surface-raw-dark);
+    --cf-elevated: var(--cf-elevated-raw-dark);
+    --cf-border: var(--cf-border-raw-dark);
+    --cf-text-primary: var(--cf-text-primary-raw-dark);
+    --cf-text-secondary: var(--cf-text-secondary-raw-dark);
+    --color-scrollbar-track: #1E1714;
+    --color-scrollbar-thumb: #493A31;
+  }
+
+  /* Reflect meta color-scheme override in CSS cascade */
+  &:has(> head > meta[name="color-scheme"][content="dark"]),
+  &.dark {
+    color-scheme: dark;
+    --cf-emerald: var(--cf-emerald-raw-dark);
+    --cf-champagne: var(--cf-champagne-raw-dark);
+    --cf-champagne-light: var(--cf-champagne-light-raw-dark);
+    --cf-dusty-rose: var(--cf-dusty-rose-raw-dark);
+    --cf-mauve: var(--cf-mauve-raw-dark);
+    --cf-bg: var(--cf-bg-raw-dark);
+    --cf-surface: var(--cf-surface-raw-dark);
+    --cf-elevated: var(--cf-elevated-raw-dark);
+    --cf-border: var(--cf-border-raw-dark);
+    --cf-text-primary: var(--cf-text-primary-raw-dark);
+    --cf-text-secondary: var(--cf-text-secondary-raw-dark);
+    --color-scrollbar-track: #1E1714;
+    --color-scrollbar-thumb: #493A31;
+  }
+
+  &:has(> head > meta[name="color-scheme"][content="light"]):not(.dark) {
+    color-scheme: light;
+    --cf-emerald: var(--cf-emerald-raw-light);
+    --cf-champagne: var(--cf-champagne-raw-light);
+    --cf-champagne-light: var(--cf-champagne-light-raw-light);
+    --cf-dusty-rose: var(--cf-dusty-rose-raw-light);
+    --cf-mauve: var(--cf-mauve-raw-light);
+    --cf-bg: var(--cf-bg-raw-light);
+    --cf-surface: var(--cf-surface-raw-light);
+    --cf-elevated: var(--cf-elevated-raw-light);
+    --cf-border: var(--cf-border-raw-light);
+    --cf-text-primary: var(--cf-text-primary-raw-light);
+    --cf-text-secondary: var(--cf-text-secondary-raw-light);
+    --color-scrollbar-track: #F0EFEA;
+    --color-scrollbar-thumb: #C5A168;
+  }
+
+  @supports (color: light-dark(white, black)) {
+    --cf-emerald: light-dark(var(--cf-emerald-raw-light), var(--cf-emerald-raw-dark));
+    --cf-champagne: light-dark(var(--cf-champagne-raw-light), var(--cf-champagne-raw-dark));
+    --cf-champagne-light: light-dark(var(--cf-champagne-light-raw-light), var(--cf-champagne-light-raw-dark));
+    --cf-dusty-rose: light-dark(var(--cf-dusty-rose-raw-light), var(--cf-dusty-rose-raw-dark));
+    --cf-mauve: light-dark(var(--cf-mauve-raw-light), var(--cf-mauve-raw-dark));
+    --cf-bg: light-dark(var(--cf-bg-raw-light), var(--cf-bg-raw-dark));
+    --cf-surface: light-dark(var(--cf-surface-raw-light), var(--cf-surface-raw-dark));
+    --cf-elevated: light-dark(var(--cf-elevated-raw-light), var(--cf-elevated-raw-dark));
+    --cf-border: light-dark(var(--cf-border-raw-light), var(--cf-border-raw-dark));
+    --cf-text-primary: light-dark(var(--cf-text-primary-raw-light), var(--cf-text-primary-raw-dark));
+    --cf-text-secondary: light-dark(var(--cf-text-secondary-raw-light), var(--cf-text-secondary-raw-dark));
+    --color-scrollbar-track: light-dark(#F0EFEA, #1E1714);
+    --color-scrollbar-thumb: light-dark(#C5A168, #493A31);
+  }
+
+  accent-color: var(--cf-emerald);
+  scrollbar-color: var(--color-scrollbar-thumb) var(--color-scrollbar-track);
+  scrollbar-width: thin;
+}
+
+/* Native <dialog> backdrop styling per modern-web-guidance */
+dialog::backdrop {
+  background-color: rgba(20, 15, 12, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+/* Responsive Data Table container & sticky headers per modern-web-guidance */
+.cf-table-wrapper {
+  overflow: auto;
+  max-inline-size: 100%;
+  container-type: inline-size;
+}
+
+.cf-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.cf-table thead {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 2;
+}
+
+.cf-table tbody th {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  background-color: var(--cf-surface);
+}
+
+@container (width < 640px) {
+  .cf-table-responsive,
+  .cf-table-responsive thead,
+  .cf-table-responsive tbody,
+  .cf-table-responsive tr,
+  .cf-table-responsive th,
+  .cf-table-responsive td {
+    display: block;
+  }
+
+  .cf-table-responsive thead {
+    /* MANDATORY: Hide column header from layout and screen readers on narrow containers */
+    display: none;
+  }
+
+  .cf-table-responsive tr {
+    margin-block-end: 0.875rem;
+    border: 1px solid var(--cf-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: var(--cf-surface);
+  }
+
+  .cf-table-responsive tbody th {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    background-color: var(--cf-elevated);
+    border-bottom: 1px solid var(--cf-border);
+  }
+
+  .cf-table-responsive td[data-label]::before {
+    content: attr(data-label) ": ";
+    font-weight: 600;
+    color: var(--cf-text-secondary);
+    margin-right: 0.5rem;
+  }
+}
+
+/* Autofill color override — prevents light blue box-shadow */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #202522 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #2B2118 inset !important;
+  -webkit-text-fill-color: #F8F1E7 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

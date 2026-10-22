@@ -10,14 +10,21 @@ const PORT = Number(process.env.PORT || 5001);
 
 async function startServer() {
   try {
-    await connectDatabase();
-    // Safe non-destructive seed if the campusflow database has no users yet
-    await ensureSeedDataIfEmpty();
-
     const app = createApp();
-    const server = app.listen(PORT, () => {
-      console.log(`[CampusFlow Server] Listening on http://localhost:${PORT}`);
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`[CampusFlow Server] Listening on http://0.0.0.0:${PORT}`);
     });
+
+    // Connect to database and safe-seed in background
+    connectDatabase()
+      .then(async () => {
+        await ensureSeedDataIfEmpty().catch((err) =>
+          console.warn('[CampusFlow Seed Notice]:', err.message)
+        );
+      })
+      .catch((err) => {
+        console.error('[CampusFlow DB Warning]: Initial database connection error:', err.message);
+      });
 
     // Background reminder job every 15 minutes
     const reminderInterval = setInterval(() => {

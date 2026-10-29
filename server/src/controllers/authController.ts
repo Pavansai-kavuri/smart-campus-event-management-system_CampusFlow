@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import mongoose from 'mongoose';
 import { OAuth2Client } from 'google-auth-library';
 import { User } from '../models/index.js';
 import {
@@ -13,6 +14,7 @@ import {
   loginSchema,
   profileUpdateSchema,
 } from '../validators/schemas.js';
+import { runSeed } from '../utils/seed.js';
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -20,6 +22,22 @@ const COOKIE_OPTIONS = {
   secure: process.env.NODE_ENV === 'production',
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
+
+function isDatabaseReady(): boolean {
+  return mongoose.connection.readyState === 1;
+}
+
+function checkDatabaseConnection(res: Response): boolean {
+  if (!isDatabaseReady()) {
+    res.status(503).json({
+      success: false,
+      error:
+        'Database connection unavailable. If deployed on Render, please configure the MONGODB_URI environment variable (pointing to your MongoDB Atlas cluster) and ensure MongoDB Atlas Network Access allows 0.0.0.0/0.',
+    });
+    return false;
+  }
+  return true;
+}
 
 function sanitizeUser(user: any) {
   return {
@@ -47,6 +65,8 @@ export async function register(
   next: NextFunction
 ): Promise<void> {
   try {
+    if (!checkDatabaseConnection(res)) return;
+
     const parsed = registerUserSchema.parse(req.body);
     const existing = await User.findOne({ email: parsed.email.toLowerCase() });
     if (existing) {
@@ -89,6 +109,8 @@ export async function login(
   next: NextFunction
 ): Promise<void> {
   try {
+    if (!checkDatabaseConnection(res)) return;
+
     const parsed = loginSchema.parse(req.body);
     const rawEmail = parsed.email.trim();
     const searchEmail = rawEmail.toLowerCase();
@@ -138,6 +160,8 @@ export async function demoLogin(
   next: NextFunction
 ): Promise<void> {
   try {
+    if (!checkDatabaseConnection(res)) return;
+
     const requestedRole = String(req.body.role || 'STUDENT').toUpperCase();
     const demoEmails: Record<string, string> = {
       STUDENT: 'Vu.241FA04312@gmail.com',
@@ -159,10 +183,31 @@ export async function demoLogin(
       user = await User.findOne({ role: requestedRole as any, isDemo: true });
     }
 
+    // Auto-bootstrap demo accounts on-the-fly if missing in fresh cloud deployment
+    if (!user) {
+      console.log(`[CampusFlow] Demo user for ${requestedRole} missing, running on-the-fly seed...`);
+      try {
+        await runSeed();
+      } catch (seedErr: any) {
+        console.warn('[CampusFlow] On-demand seed notice:', seedErr.message);
+      }
+      user = await User.findOne({
+        $or: [
+          { email: targetEmail },
+          { email: targetEmail.toLowerCase() },
+          { email: { $regex: new RegExp(`^${escapedTarget}$`, 'i') } },
+          ...(requestedRole === 'STUDENT' ? [{ rollNumber: '241FA04312' }] : []),
+        ],
+      });
+      if (!user) {
+        user = await User.findOne({ role: requestedRole as any, isDemo: true });
+      }
+    }
+
     if (!user) {
       res.status(404).json({
         success: false,
-        error: 'Demo user not found. Run npm run seed to initialize demo accounts.',
+        error: `Demo account for ${requestedRole} could not be initialized. Please verify your MongoDB connection.`,
       });
       return;
     }
@@ -200,6 +245,8 @@ export async function googleLogin(
   next: NextFunction
 ): Promise<void> {
   try {
+    if (!checkDatabaseConnection(res)) return;
+
     let email = req.body.email;
     let name = req.body.name;
     let avatar = req.body.avatar;

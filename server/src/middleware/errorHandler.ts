@@ -28,6 +28,23 @@ export function errorHandler(
     return;
   }
 
+  // Handle MongoDB connection, network, or buffering timeout errors cleanly
+  const errMsg = String(err?.message || '');
+  if (
+    err?.name === 'MongooseServerSelectionError' ||
+    errMsg.includes('buffering timed out') ||
+    errMsg.includes('ECONNREFUSED') ||
+    errMsg.includes('server selection timed out')
+  ) {
+    console.error('[CampusFlow DB Connection Error]:', errMsg);
+    res.status(503).json({
+      success: false,
+      error:
+        'Database connection unavailable. If deployed on Render, please configure the MONGODB_URI environment variable (pointing to your MongoDB Atlas cluster) and verify Atlas Network Access allows 0.0.0.0/0.',
+    });
+    return;
+  }
+
   const statusCode = typeof err?.statusCode === 'number' ? err.statusCode : 500;
   const message =
     statusCode < 500

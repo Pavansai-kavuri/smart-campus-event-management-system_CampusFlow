@@ -15,16 +15,24 @@ async function startServer() {
       console.log(`[CampusFlow Server] Listening on http://0.0.0.0:${PORT}`);
     });
 
-    // Connect to database and safe-seed in background
-    connectDatabase()
-      .then(async () => {
+    // Connect to database with automated retry loop
+    let isConnected = false;
+    const connectWithRetry = async (attempt = 1) => {
+      if (isConnected) return;
+      try {
+        await connectDatabase();
+        isConnected = true;
         await ensureSeedDataIfEmpty().catch((err) =>
           console.warn('[CampusFlow Seed Notice]:', err.message)
         );
-      })
-      .catch((err) => {
-        console.error('[CampusFlow DB Warning]: Initial database connection error:', err.message);
-      });
+      } catch (err: any) {
+        console.warn(
+          `[CampusFlow DB Attempt ${attempt}]: Connection pending (${err.message}). Retrying in 10s...`
+        );
+        setTimeout(() => connectWithRetry(attempt + 1), 10000);
+      }
+    };
+    connectWithRetry();
 
     // Background reminder job every 15 minutes
     const reminderInterval = setInterval(() => {
